@@ -1,4 +1,4 @@
-fuc.IDtoname=function (args)
+fuc.IDtoON=function (args)-- get the old name
 	local file={}
 	setmetatable(file,{__index=table})
 	for i=2,#args do
