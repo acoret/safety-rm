@@ -27,7 +27,7 @@ fuc.rm=function(args)
 	os.execute("mkdir "..aim..quiet)
   end]]
   os.execute("mkdir "..aim..quiet)
-  local moved=os.execute("mv "..table.concat(file)..aim)
+  local moved=os.execute("mv "..table.concat(file)..aim.."/")
   list:insert({time,pwd,table.concat(file)})
   ret=1
 end
@@ -51,15 +51,14 @@ fuc.list=function (args)
 
 end
 
-fuc.unrm=function(args)
+fuc.unrm=function(args) --change the way,use a functhion to get name,and now unrm just use mv
   local name
   print "make sure the ID please"
-  local ID,file={}
-  for i=2,#args do
-	ID=args[i]
-	string.gsub(list[ID],".- ",function (x) table.insert(file,x) end)
-    --unfinished
-	
+  local filename
+  local aim,time	
+  filename=fuc.IDtoON(args)
+
+  for i,v in pairs(filename) do
   end
 end
 
