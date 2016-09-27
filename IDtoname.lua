@@ -6,16 +6,19 @@ fuc.IDtoON=function (args)-- get the old path
 		   print "ID don't exsit,error 2"
 	   end
    	end
-	local name={},filename={},work,tfpath,tryname
+	local name,filename,work,tfpath,tryname
+	name={}
+	filename={}
 	for i,v in pairs(file) do --insert time and try more
 	   work=v[3].." "
-	   work=string.gsub(work,"\"*-\"",function (x) table.insert(name,{v[2],x}) return nil end)
-	   work=string.gsub(work,"'*-'",function (x) table.insert(name,{v[2],x}) return nil end)
-	   work=string.gsub(work,"[^ ]- ",function (x) table.insert(name,{v[2],x}) return nil end)
+	   work=string.gsub(work,"\"*-\"",function (x) table.insert(name,{v[2],x,v[1]}) return nil end)
+	   work=string.gsub(work,"'*-'",function (x) table.insert(name,{v[2],x,v[1]}) return nil end)
+	   work=string.gsub(work,"[^ ]- ",function (x) table.insert(name,{v[2],x,v[1]}) return nil end)
 	   end
 	   for i,v in pairs(name) do
 		tryname=string.match(v[2],".+/(.-$)")
 		if not tryname then tryname=v[2] end
+		tfpath=trash..v[1]..tryname
 	     if string.sub(v[2],1,1)=="/" then --v[2]=real filename v[3]=trashname
 		   --real path
 		 table.insert(filename,{v[2],tfpath})
