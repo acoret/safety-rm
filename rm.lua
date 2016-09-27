@@ -2,11 +2,11 @@ fuc={}
 list={}
 if not arg then arg={} end
 installed="/home/uncrepter/Code/safety-rm/" --installmarked
-pwd=arg[#arg].."/"
+pwd=arg[#arg]
 arg[#arg]=nil
 trash="~/.trash/" --tra
---debug=1
-print "debug set"
+debug=1
+--print "debug set"
 
 loadlist=loadfile (installed.."list.lua")--利用原来的表数据读入。
 loadtoname=loadfile (installed .."IDtoname.lua")
@@ -99,7 +99,7 @@ fuc.save=function ()
 	str:insert("list["..i.."]={\n    ")
 	for j,k in pairs(v) do
 	  str:insert("\""..k)
-	  str:insert(",\n    ")
+	  str:insert("\",\n    ")
 	end
 	str[#str]="}\n"
   end
@@ -128,6 +128,7 @@ end
 
 if fuc[arg[1]] then
   fuc[arg[1]](arg)
+  fuc.save()
   return ret
 else
   print "No such command,please check help"
