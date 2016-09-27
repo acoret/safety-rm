@@ -1,13 +1,25 @@
 fuc={}
 list={}
-installed="~/Code/lua/" --installmarked
+if not arg then arg={} end
+installed="/home/uncrepter/Code/safety-rm/" --installmarked
 pwd=arg[#arg].."/"
 arg[#arg]=nil
 trash="~/.trash/" --tra
+--debug=1
+print "debug set"
 
-loadfile (installed.."list.lua")--利用原来的表数据读入。
+loadlist=loadfile (installed.."list.lua")--利用原来的表数据读入。
+loadtoname=loadfile (installed .."IDtoname.lua")
+if loadlist then loadlist() end
+loadtoname()
 
 setmetatable(list,{__index=table})
+do
+if debug then
+  local e=os.execute
+  os.execute=print
+end
+end
 local quiet=" >/dev/null 2>/dev/null"
 ret=1
 --删除 也就是rm啦
@@ -20,7 +32,7 @@ fuc.rm=function(args)
 	table.insert(file,args[i])
 	table.insert(file," ")
   end
-  local time=os.date("%x-%X")
+  local time=string.gsub(os.date("%x-%X"),"/","-")
   local aim=trash..time
   --[[local exsit=os.execute ("ls "..aim..quiet)
   if not exsit then
@@ -28,24 +40,33 @@ fuc.rm=function(args)
   end]]
   os.execute("mkdir "..aim..quiet)
   local moved=os.execute("mv "..table.concat(file)..aim.."/")
+  if debug then print (time,pwd,table.concat(file)) end
   list:insert({time,pwd,table.concat(file)})
   ret=1
 end
 
 fuc.list=function (args)
   local name
-	if args>1 then
+    if args then
+	  if debug then print (#args) end
+	if #args>1 then
 	  for j=2,#args do
 		name=args[j]
 		for i,v in pairs(list) do
-		  if string.match(list[3],name) then
-		    print ("ID: "..i,"time="..list[1],"path="..list[2],"file="..list[3])
+		  if string.match(v[3],name) then
+		    print ("ID: "..i,"time="..v[1],"path="..v[2],"file="..v[3])
 		  end
 		end
 	  end
 	else
 	  for i,v in pairs(list) do
-		print ("ID: "..i,"time="..list[1],"path="..list[2],"file="..list[3])
+		print ("ID: "..i,"time="..v[1],"path="..v[2],"file="..v[3])
+	  end
+	end
+
+	else
+	  for i,v in pairs(list) do
+		print ("ID: "..i,"time="..v[1],"path="..v[2],"file="..v[3])
 	  end
 	end
 
@@ -53,12 +74,16 @@ end
 
 fuc.unrm=function(args) --change the way,use a functhion to get name,and now unrm just use mv
   local name
-  print "make sure the ID please"
+  print "Don't miss the ID !"
   local filename
   local aim,time	
   filename=fuc.IDtoON(args)
 
   for i,v in pairs(filename) do
+	os.execute("mv " .. v[2] .. " "..v[1])
+  end
+  for i=2,#args do 
+	list[args[i]]=nil
   end
 end
 
