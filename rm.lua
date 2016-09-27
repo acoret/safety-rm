@@ -2,13 +2,13 @@ fuc={}
 list={}
 if not arg then arg={} end
 installed="/home/uncrepter/Code/safety-rm/" --installmarked
-pwd=arg[#arg]
+pwd=arg[#arg] .. "/"
 arg[#arg]=nil
 trash="~/.trash/" --tra
-debug=1
+debug=nil
 --print "debug set"
 
-loadlist=loadfile (installed.."list.lua")--利用原来的表数据读入。
+loadlist=loadfile (installed .. "list.lua")--利用原来的表数据读入。
 loadtoname=loadfile (installed .."IDtoname.lua")
 if loadlist then loadlist() end
 loadtoname()
@@ -48,7 +48,7 @@ end
 fuc.list=function (args)
   local name
     if args then
-	  if debug then print (#args) end
+	  if debug then print ("argn: " .. #args) end
 	if #args>1 then
 	  for j=2,#args do
 		name=args[j]
@@ -83,7 +83,7 @@ fuc.unrm=function(args) --change the way,use a functhion to get name,and now unr
 	os.execute("mv " .. v[2] .. " "..v[1])
   end
   for i=2,#args do 
-	list[args[i]]=nil
+	list[tonumber(args[i])]=nil
   end
 end
 
@@ -91,7 +91,7 @@ end
 
 --保存list表
 fuc.save=function ()
-  file=io.open(installed.."list.lua","w+")
+  file=io.open(installed.."list.lua","w")
   local str={}
   setmetatable(str,{__index=table})
   str:insert("list={}\n")
@@ -101,7 +101,7 @@ fuc.save=function ()
 	  str:insert("\""..k)
 	  str:insert("\",\n    ")
 	end
-	str[#str]="}\n"
+	str[#str]="\"}\n"
   end
   if debug then
     print("list输出为:",str:concat())
@@ -124,6 +124,20 @@ fuc.install=function(args)
 	file:flush()
 	file:close()
 end
+
+fuc.rlrm=function (args)
+  if #args<2 then return 0 end
+  local v
+  for i=2,#args do
+	v=list[tonumber(args[i])]
+		print ("ID: "..args[i],"time="..v[1],"path="..v[2],"file="..v[3])
+	end
+	print "are u sure? it can't be overi\nplease input the the ID again"
+	local input=io.read()
+	input=input .. " "
+	local nargs={"mv "}
+	string.gsub(input,"(.-) ",function(x) table.insert(x) end)
+  end
 
 
 if fuc[arg[1]] then

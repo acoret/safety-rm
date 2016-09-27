@@ -1,11 +1,12 @@
 fuc.IDtoON=function (args)-- get the old path
-	local file={}
+	local file={},work
 	setmetatable(file,{__index=table})
 	for i=2,#args do
-	   if (not list[args[i]]) then
+	  work=list[tonumber(args[i])]
+	   if (not work) then
 		   print "ID don't exsit,error 2"
 		 else
-		   file:insert(list[args[i]])
+		   file:insert(work)
 	   end
    	end
 	if debug then print (#file) end
