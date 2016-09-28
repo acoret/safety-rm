@@ -21,4 +21,6 @@ just take these,it need 3 arg,first (command) (file or ID) (pwd)
 list $(filename)  
 unrm $(fileID which found in list command)  
 rlrm $(fileID which found in list command)*  
-
+  
+###i walk a silly way.
+First,when u use rm,it will create a dir according to the time,and so in most condition,the every file u del will be together in thier dir,in fact in list,every command the file was deled,their share one pack in list,but i don't make their in same pack when i unrm the file,so it cause many problem,and cause the speed low.And my style is not style,just mess..
