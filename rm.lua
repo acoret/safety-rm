@@ -1,11 +1,12 @@
 fuc={}
+rm="/bin/rm"--allow u to change it
 list={}
 if not arg then arg={} end
 installed="/home/uncrepter/Code/safety-rm/" --installmarked
 pwd=arg[#arg] .. "/"
 arg[#arg]=nil
 trash="~/.trash/" --tra
-debug=nil
+debug=nil--if u want to debug replace nil with 1 or somgthing not nil
 --print "debug set"
 
 loadlist=loadfile (installed .. "list.lua")--利用原来的表数据读入。
@@ -91,6 +92,7 @@ end
 
 --保存list表
 fuc.save=function ()
+  if debug then print "because debug,so not write" return end
   file=io.open(installed.."list.lua","w")
   local str={}
   setmetatable(str,{__index=table})
@@ -130,13 +132,34 @@ fuc.rlrm=function (args)
   local v
   for i=2,#args do
 	v=list[tonumber(args[i])]
+	if not v then print "nil ID,please check" ret=3 return ret end
 		print ("ID: "..args[i],"time="..v[1],"path="..v[2],"file="..v[3])
 	end
 	print "are u sure? it can't be overi\nplease input the the ID again"
 	local input=io.read()
 	input=input .. " "
 	local nargs={"mv "}
-	string.gsub(input,"(.-) ",function(x) table.insert(x) end)
+	string.gsub(input,"(.-) ",function(x) table.insert(nargs,x) end)
+	local real=1
+	for i=2,#nargs do
+
+	  if debug then print("oID:",nargs[i],"nID:",args[i]) end
+	  if nargs[i]~=args[i] then real=nil print "ID don;t match" ; ret=3 ;return 3  end
+	end
+	if real then
+		local fileret=fuc.IDtoON(nargs)
+		local file={}
+		if not fileret then print "sorry,a bug occupied\nplease backup the list.lua and last command u give,report it on github,or emial it to acoret@126.com" ret=4 return 4  end
+		for i,v in pairs(fileret) do
+		  table.insert(file,v[2])
+		end
+		os.execute(rm .." -rf "..table.concat(file," "))
+		for i=2,#nargs do 
+		  list[i]=nil --sorry i forget to ...delete the list
+		end
+	end
+	
+
   end
 
 

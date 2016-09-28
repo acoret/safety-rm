@@ -9,20 +9,20 @@ fuc.IDtoON=function (args)-- get the old path
 		   file:insert(work)
 	   end
    	end
-	if debug then print (#file) end
+	if debug then print ("n of file in IDtoON:",#file) end
 	local name,filename,work,tfpath,tryname
 	name={}
 	filename={}
 	for i,v in pairs(file) do --insert time and try more
 	   work=v[3].." "
-	   local add=function(x) if debug then print (x) end if x~=" " then table.insert(name,{v[2],x,v[1]}) return nil end end
+	   local add=function(x) if debug then print ("matched in IDtoON:",x) end if x~=" " then table.insert(name,{v[2],x,v[1]}) return nil end end
 	   work=string.gsub(work,"\"*-\"",add)
 	   work=string.gsub(work,"'*-'",add)
 	   work=string.gsub(work,"[^ ]- ",add)
 	   end
 	   for i,v in pairs(name) do
 		tryname=string.match(v[2],".+/(.-)$")
-		if debug then print(tryname) end
+		if debug then print("tryname in IDtoON:",tryname) end
 		if not tryname then tryname=v[2] end
 		tfpath=trash..v[3].."/"..tryname
 		local fir=string.sub(v[2],1,1)
