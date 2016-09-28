@@ -5,11 +5,11 @@ if not arg then arg={} end
 installed="/home/uncrepter/Code/safety-rm/" --installmarked
 pwd=arg[#arg] .. "/"
 arg[#arg]=nil
-trash="~/.trash/" --tra
+trash="/home/uncrepter/.trash/" --trash
 debug=nil--if u want to debug replace nil with 1 or somgthing not nil
 --print "debug set"
 
-loadlist=loadfile (installed .. "list.lua")--利用原来的表数据读入。
+loadlist=loadfile (trash .. "list.lua")--利用原来的表数据读入。
 loadtoname=loadfile (installed .."IDtoname.lua")
 if loadlist then loadlist() end
 loadtoname()
@@ -39,7 +39,7 @@ fuc.rm=function(args)
   if not exsit then
 	os.execute("mkdir "..aim..quiet)
   end]]
-  os.execute("mkdir "..aim..quiet)
+  if not os.execute("mkdir "..aim..quiet) then print "error 3,file didn't exsit,u shold check out\n but the file which exsit have been rmed" ret=5  end
   local moved=os.execute("mv "..table.concat(file)..aim.."/")
   if debug then print (time,pwd,table.concat(file)) end
   list:insert({time,pwd,table.concat(file)})
@@ -52,6 +52,7 @@ fuc.list=function (args)
 	  if debug then print ("argn: " .. #args) end
 	if #args>1 then
 	  for j=2,#args do
+
 		name=args[j]
 		for i,v in pairs(list) do
 		  if string.match(v[3],name) then
@@ -93,7 +94,7 @@ end
 --保存list表
 fuc.save=function ()
   if debug then print "because debug,so not write" return end
-  file=io.open(installed.."list.lua","w")
+  file=io.open(trash.."list.lua","w")
   local str={}
   setmetatable(str,{__index=table})
   str:insert("list={}\n")
@@ -135,7 +136,7 @@ fuc.rlrm=function (args)
 	if not v then print "nil ID,please check" ret=3 return ret end
 		print ("ID: "..args[i],"time="..v[1],"path="..v[2],"file="..v[3])
 	end
-	print "are u sure? it can't be overi\nplease input the the ID again"
+	print "are u sure? it can't be recover\nplease input the the ID again"
 	local input=io.read()
 	input=input .. " "
 	local nargs={"mv "}
@@ -149,14 +150,19 @@ fuc.rlrm=function (args)
 	if real then
 		local fileret=fuc.IDtoON(nargs)
 		local file={}
+		--local checkdir={} #4
 		if not fileret then print "sorry,a bug occupied\nplease backup the list.lua and last command u give,report it on github,or emial it to acoret@126.com" ret=4 return 4  end
 		for i,v in pairs(fileret) do
 		  table.insert(file,v[2])
+		 -- if not checkdir[string.match(v[2],"(.+)/")] then checkdir[string.match(v[2],"(.+)/")]=true end #4
+		 -- #4 it have been be replace by ^4
 		end
+		if debug then for i,_ in pairs(checkdir) do print("There is checkdir:",i) end end
 		os.execute(rm .." -rf "..table.concat(file," "))
 		for i=2,#nargs do 
-		  list[i]=nil --sorry i forget to ...delete the list
+		  list[tonumber(nargs[i])]=nil --sorry i forget to ...delete the list
 		end
+		os.execute ("rmdir ".. trash.."* 2> /dev/null")
 	end
 	
 
