@@ -30,7 +30,7 @@ fuc.rm=function(args)
   end
   local file={}
   for i=2,#args do
-	table.insert(file,args[i])
+	table.insert(file,"\""..args[i].."\"")
 	table.insert(file," ")
   end
   local time=string.gsub(os.date("%x-%X"),"/","-")
@@ -39,7 +39,7 @@ fuc.rm=function(args)
   if not exsit then
 	os.execute("mkdir "..aim..quiet)
   end]]
-  if not os.execute("mkdir "..aim..quiet) then print "error 3,file didn't exsit,u shold check out\n but the file which exsit have been rmed" ret=5  end
+  if not os.execute("mkdir "..aim..quiet) then print "error 3,file didn't exsit,u shold check out\n but the file which exsit have been deleted" ret=5  end
   local moved=os.execute("mv "..table.concat(file)..aim.."/")
   if debug then print (time,pwd,table.concat(file)) end
   list:insert({time,pwd,table.concat(file)})
@@ -95,6 +95,9 @@ end
 fuc.save=function ()
   if debug then print "because debug,so not write" return end
   file=io.open(trash.."list.lua","w")
+  if not file then
+	print "error,'.trash/list.lua' permission deny"
+  end
   local str={}
   setmetatable(str,{__index=table})
   str:insert("list={}\n")
@@ -110,7 +113,6 @@ fuc.save=function ()
     print("list输出为:",str:concat())
   else
     file:write(str:concat())
-    file:flush()
     file:close()
   end
 end
