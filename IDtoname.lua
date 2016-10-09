@@ -15,13 +15,13 @@ fuc.IDtoON=function (args)-- get the old path
 	filename={}
 	for i,v in pairs(file) do --insert time and try more
 	   work=v[3].." "
-	   local add=function(x) if debug then print ("matched in IDtoON:",x) end if x~=" " then table.insert(name,{v[2],x,v[1]}) return nil end end
-	   work=string.gsub(work,"\"*-\"",add)
-	   work=string.gsub(work,"'*-'",add)
+	   local add=function(x) if debug then print ("matched in IDtoON:",x) end if x~=" " then table.insert(name,{v[2],x,v[1]}) return "" end end
+	   work=string.gsub(work,"\"(.-)\"",add)
+	   work=string.gsub(work,"'(.-)'",add)
 	   work=string.gsub(work,"[^ ]- ",add)
 	   end
 	   for i,v in pairs(name) do
-		tryname=string.match(v[2],".+/(.-)$")
+		tryname=string.match(v[2],".+/((.-))$")
 		if debug then print("tryname in IDtoON:",tryname) end
 		if not tryname then tryname=v[2] end
 		tfpath=trash..v[3].."/"..tryname
@@ -29,10 +29,10 @@ fuc.IDtoON=function (args)-- get the old path
 		local sec=string.sub(v[2],2,2)
 	     if (fir~="~" and fir=="/") or (fir=="~" and sec=="/") then --v[2]=real filename v[3]=trashname
 		   --real path
-		 table.insert(filename,{v[2],tfpath})
+		 table.insert(filename,{"'"..v[2].."'","'"..tfpath.."'"})
    	     else
 		   --false path
-		 table.insert(filename,{v[1].. v[2],tfpath})
+		 table.insert(filename,{"'"..v[1].. v[2].."'","'"..tfpath.."'"})
 	     end
 	   end
 	   return filename

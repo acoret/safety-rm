@@ -30,8 +30,7 @@ fuc.rm=function(args)
   end
   local file={}
   for i=2,#args do
-	table.insert(file,"\""..args[i].."\"")
-	table.insert(file," ")
+	table.insert(file,"'"..args[i].."'")
   end
   local time=string.gsub(os.date("%x-%X"),"/","-")
   local aim=trash..time
@@ -40,9 +39,9 @@ fuc.rm=function(args)
 	os.execute("mkdir "..aim..quiet)
   end]]
   if not os.execute("mkdir "..aim..quiet) then print "error 3,file didn't exsit,u shold check out\n but the file which exsit have been deleted" ret=5  end
-  local moved=os.execute("mv "..table.concat(file)..aim.."/")
-  if debug then print (time,pwd,table.concat(file)) end
-  list:insert({time,pwd,table.concat(file)})
+  local moved=os.execute("mv "..table.concat(file," ").." "..aim.."/")
+  if debug then print (time,pwd,table.concat(file," ")) end
+  list:insert({time,pwd,table.concat(file," ")})
   ret=1
 end
 
@@ -93,10 +92,12 @@ end
 
 --保存list表
 fuc.save=function ()
-  if debug then print "because debug,so not write" return end
-  file=io.open(trash.."list.lua","w")
-  if not file then
-	print "error,'.trash/list.lua' permission deny"
+  if debug then print "because debug,so not write" 
+  else
+  	file=io.open(trash.."list.lua","w")
+  	if not file then
+		print "error,'.trash/list.lua' permission deny"
+  	end
   end
   local str={}
   setmetatable(str,{__index=table})
@@ -104,10 +105,11 @@ fuc.save=function ()
   for i,v in pairs(list) do
 	str:insert("list["..i.."]={\n    ")
 	for j,k in pairs(v) do
-	  str:insert("\""..k)
-	  str:insert("\",\n    ")
+	  k=string.gsub(k,"'","\\'")
+	  str:insert("'"..k)
+	  str:insert("',\n    ")
 	end
-	str[#str]="\"}\n"
+	str[#str]="'}\n"
   end
   if debug then
     print("list输出为:",str:concat())
@@ -159,7 +161,7 @@ fuc.rlrm=function (args)
 		 -- if not checkdir[string.match(v[2],"(.+)/")] then checkdir[string.match(v[2],"(.+)/")]=true end #4
 		 -- #4 it have been be replace by ^4
 		end
-		if debug then for i,_ in pairs(checkdir) do print("There is checkdir:",i) end end
+		--if debug then for i,_ in pairs(checkdir) do print("There is checkdir:",i) end end
 		os.execute(rm .." -rf "..table.concat(file," "))
 		for i=2,#nargs do 
 		  list[tonumber(nargs[i])]=nil --sorry i forget to ...delete the list
